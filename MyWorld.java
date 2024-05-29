@@ -14,6 +14,7 @@ public class MyWorld extends World
      * 
      */
     public int activePlayer = 1;
+    private Checker selectedChecker;
     
     
     public MyWorld()
@@ -22,6 +23,8 @@ public class MyWorld extends World
         super(10, 12, 50); 
         createBoard();
         activePlayer();
+        
+        selectChecker();
     }
     
     public void createBoard() {
@@ -63,6 +66,29 @@ public class MyWorld extends World
             showText("Player " + activePlayer + "'s turn", 2, 2);
         
 
+    }
+    
+    public void selectChecker() {
+        if (Greenfoot.mouseClicked(null)) {
+        Actor actor = Greenfoot.getMouseInfo().getActor();
+        if (actor != null) {
+            System.out.println("Clicked on: " + actor.getClass().getName());
+        }
+        if (actor instanceof Checker) {
+            selectedChecker = (Checker) actor;
+            System.out.println("Checker selected at: " + actor.getX() + ", " + actor.getY());
+        } else if (actor instanceof Tile && selectedChecker != null) {
+            moveCheckerToTile(selectedChecker, (Tile) actor);
+            System.out.println("Checker moved to: " + actor.getX() + ", " + actor.getY());
+            selectedChecker = null; // Deselect after moving
+        }
+    }
+    }
+    
+    private void moveCheckerToTile(Checker checker,Tile tile) {
+        int newX = tile.getX();
+        int newY = tile.getY();
+        checker.setLocation(newX, newY);
     }
     
 }

@@ -1,20 +1,20 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class BlackTile here.
+ * Write a description of class DollarHighlight here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class BlackTile extends Tile
+public class DollarHighlight extends Highlight
 {
     /**
-     * Act - do whatever the BlackTile wants to do. This method is called whenever
+     * Act - do whatever the DollarHighlight wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    public BlackTile() {
+    public DollarHighlight() {
         GreenfootImage image = getImage();
-        image.scale(50 , 50);
+        image.scale(45 , 45);
         setImage(image);
     }
     

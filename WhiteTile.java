@@ -6,7 +6,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class WhiteTile extends Actor
+public class WhiteTile extends Tile
 {
     /**
      * Act - do whatever the WhiteTile wants to do. This method is called whenever
