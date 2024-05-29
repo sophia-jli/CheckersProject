@@ -12,8 +12,28 @@ public class Tile extends Actor
      * Act - do whatever the Tile wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    public void act()
-    {
-        // Add your action code here.
+    
+    
+    private int row;
+    private int col;
+
+    public Tile(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
+    public void act() {
+        if (Greenfoot.mouseClicked(this)) {
+            MyWorld world = (MyWorld) getWorld();
+            //world.tileClicked(this);
+        }
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
     }
 }

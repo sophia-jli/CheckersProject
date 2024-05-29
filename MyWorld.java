@@ -2,93 +2,93 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
  * Write a description of class MyWorld here.
- * 
- * @author (your name) 
+ * AANYA AND SOPHIA
  * @version (a version number or a date)
  */
 public class MyWorld extends World
 {
-
     /**
      * Constructor for objects of class MyWorld.
-     * 
      */
     public int activePlayer = 1;
     private Checker selectedChecker;
-    
+    public int[][] board;
+
+    public static final int EMPTY = 0;
+    public static final int PLAYER_ONE_PIECE = 1;
+    public static final int PLAYER_TWO_PIECE = 2;
     
     public MyWorld()
     {    
-        // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-        super(10, 12, 50); 
+        // Create a new world with 8x8 cells with a cell size of 50x50 pixels.
+        super(8, 8, 50); 
         createBoard();
-        activePlayer();
-        
-        selectChecker();
+        showActivePlayer();
     }
     
     public void createBoard() {
+        board = new int[8][8];
         for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if ((i + j) % 2 == 0) {
-                addObject(new WhiteTile(), i+1, j+3);
-            } else {
-                addObject(new BlackTile(), i+1, j+3);
+            for (int j = 0; j < 8; j++) {
+                if ((i + j) % 2 == 0) {
+                    addObject(new WhiteTile(i, j), j, i);
+                } else {
+                    addObject(new BlackTile(i, j), j, i);
+                }
+                board[i][j] = EMPTY; // Initialize the board to be empty
             }
         }
-    }
-    
-    for (int i=1; i<8; i+=2) {
-        for (int j=0; j<3;j++) {
-            if (j%2==0) {
-                addObject(new SandDollar(), i+1, j+3);
-            }
-            else {
-                addObject(new SandDollar(), i, j+3);
-            }
-        }
-    }
-    
-    for (int i=1; i<8; i+=2) {
-        for (int j=0; j<3;j++) {
-            if (j%2==1) {
-                addObject(new SeaShell(), i+1, j+8);
-            }
-            else {
-                addObject(new SeaShell(), i, j+8);
-            }
-        }
-    }
-    }
-    
-    public void activePlayer() {
-
-            showText("Player " + activePlayer + "'s turn", 2, 2);
         
+        // Add player one pieces
+        for (int i = 0; i < 8; i += 2) {
+            for (int j = 0; j < 3; j++) {
+                if (j % 2 == 0) {
+                    addObject(new Checker(true, j, i), i, j);
+                    board[j][i] = PLAYER_ONE_PIECE;
+                } else {
+                    addObject(new Checker(true, j, i + 1), i + 1, j);
+                    board[j][i + 1] = PLAYER_ONE_PIECE;
+                }
+            }
+        }
+        
+        // Add player two pieces
+        for (int i = 0; i < 8; i += 2) {
+            for (int j = 5; j < 8; j++) {
+                if (j % 2 == 0) {
+                    addObject(new Checker(false, j, i), i, j);
+                    board[j][i] = PLAYER_TWO_PIECE;
+                } else {
+                    addObject(new Checker(false, j, i + 1), i + 1, j);
+                    board[j][i + 1] = PLAYER_TWO_PIECE;
+                }
+            }
+        }
+    }
+    
+    public void showActivePlayer() {
+        showText("Player " + activePlayer + "'s turn", 2, 2);
+    }
+    
+    public void selectChecker(Checker checker) {
+        if (selectedChecker != null) {
+            selectedChecker.setSelected(false);
+        }
+        selectedChecker = checker;
+        selectedChecker.setSelected(true);
+    }
 
+    public void moveChecker(Checker checker, int toRow, int toCol) {
+        int fromRow = checker.getRow();
+        int fromCol = checker.getCol();
+        board[toRow][toCol] = board[fromRow][fromCol];
+        board[fromRow][fromCol] = EMPTY;
+        checker.setPosition(toRow, toCol);
     }
-    
-    public void selectChecker() {
-        if (Greenfoot.mouseClicked(null)) {
-        Actor actor = Greenfoot.getMouseInfo().getActor();
-        if (actor != null) {
-            System.out.println("Clicked on: " + actor.getClass().getName());
-        }
-        if (actor instanceof Checker) {
-            selectedChecker = (Checker) actor;
-            System.out.println("Checker selected at: " + actor.getX() + ", " + actor.getY());
-        } else if (actor instanceof Tile && selectedChecker != null) {
-            moveCheckerToTile(selectedChecker, (Tile) actor);
-            System.out.println("Checker moved to: " + actor.getX() + ", " + actor.getY());
-            selectedChecker = null; // Deselect after moving
-        }
+
+    public void switchPlayer() {
+        activePlayer = (activePlayer == 1) ? 2 : 1;
+        showActivePlayer();
     }
-    }
-    
-    private void moveCheckerToTile(Checker checker,Tile tile) {
-        int newX = tile.getX();
-        int newY = tile.getY();
-        checker.setLocation(newX, newY);
-    }
-    
 }
+

@@ -12,9 +12,11 @@ public class BlackTile extends Tile
      * Act - do whatever the BlackTile wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    public BlackTile() {
+
+    public BlackTile(int row, int col) {
+        super(row, col);
         GreenfootImage image = getImage();
-        image.scale(50 , 50);
+        image.scale(50, 50);
         setImage(image);
     }
     
