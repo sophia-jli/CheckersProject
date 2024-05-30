@@ -13,19 +13,19 @@ public class Tile extends Actor
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     
-    
     private int row;
     private int col;
     private boolean isSelected;
     protected GreenfootImage imageNormal;
     protected GreenfootImage imageHighlight;
     
-    private boolean isHighlighted;
+    private boolean isHighlighted; //FIX THIS?? isnt highlighting
     
 
     public Tile(int row, int col) {
         this.row = row;
         this.col = col;
+        
     }
 
     public void act() {
@@ -34,7 +34,7 @@ public class Tile extends Actor
         }
         if (Greenfoot.mouseMoved(null) && !Greenfoot.mouseMoved(this)) {
             setHighlighted(false);
-        }
+        } //NOT WORKING>??
     }
 
     public int getRow() {
@@ -46,16 +46,18 @@ public class Tile extends Actor
     }
     
     public void setHighlighted(boolean highlighted) {
-        isHighlighted = highlighted;
+        isHighlighted = true;
         updateImage();
     }
 
     protected void updateImage() {
         if (isHighlighted) {
-            setImage(imageHighlight);
-        } else {
+            setImage(imageHighlight); //
+        } 
+        else {
             setImage(imageNormal);
         }
+        
     }
     
 }

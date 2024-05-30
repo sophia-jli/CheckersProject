@@ -9,12 +9,19 @@ import java.util.List;
 public class Checker extends Actor
 {
     protected boolean isPlayerOne;
-    protected int row, col;
+    protected int row;
+    protected int col;
     private boolean isSelected;
     private GreenfootImage imageDollar;
     private GreenfootImage imageShell;
     private GreenfootImage imageDollarHighlight;
     private GreenfootImage imageShellHighlight;
+    //KING variables:
+    private boolean isKing;
+    private GreenfootImage imageDollarKing;
+    private GreenfootImage imageShellKing;
+    private GreenfootImage imageDollarKingHighlight;
+    private GreenfootImage imageShellKingHighlight;
 
     public Checker(boolean isPlayerOne, int row, int col) {
         this.isPlayerOne = isPlayerOne;
@@ -37,6 +44,7 @@ public class Checker extends Actor
     public void act() {
         if (Greenfoot.mouseClicked(this)) {
             MyWorld world = (MyWorld) getWorld();
+            
             if ((isPlayerOne && world.activePlayer == 1) || (!isPlayerOne && world.activePlayer == 2)) {
                 world.selectChecker(this);
             }
@@ -44,11 +52,13 @@ public class Checker extends Actor
 
         if (isSelected && Greenfoot.mouseClicked(null)) {
             MouseInfo mouse = Greenfoot.getMouseInfo();
+            
             if (mouse != null) {
                 Actor clickedActor = mouse.getActor();
                 if (clickedActor instanceof Tile) {
                     Tile tile = (Tile) clickedActor;
                     moveToTile(tile);
+                    
                 }
             }
         }
@@ -57,11 +67,11 @@ public class Checker extends Actor
     public int getRow() {
         return row;
     }
-
     public int getCol() {
         return col;
     }
 
+    
     public void setPosition(int row, int col) {
         this.row = row;
         this.col = col;
@@ -79,25 +89,46 @@ public class Checker extends Actor
 
     private void updateImage() {
         GreenfootImage image = new GreenfootImage(50, 50);
-        if (isPlayerOne) {
+        if (!isKing) {
+            if (isPlayerOne) {
             setImage(imageDollar);
         } else {
             setImage(imageShell);
         }
+        
         if (isSelected && isPlayerOne) {
             setImage(imageDollarHighlight);
         }
         if (isSelected && !isPlayerOne) {
             setImage(imageShellHighlight);
         }
+        }
+        
+        else {
+       
+            if (isPlayerOne) {
+            setImage(imageDollarKing);
+        } else {
+            setImage(imageShellKing);
+        }
+        
+        if (isSelected && isPlayerOne) {
+            setImage(imageDollarKingHighlight);
+        }
+        if (isSelected && !isPlayerOne) {
+            setImage(imageShellKingHighlight);
+        }
+        }
+        
         
         
     }
     
     private void moveToTile(Tile tile) {
-        MyWorld world = (MyWorld) getWorld();
+        MyWorld world = (MyWorld)getWorld();
         int fromRow = getRow();
         int fromCol = getCol();
+        
         int toRow = tile.getRow();
         int toCol = tile.getCol();
 
@@ -133,6 +164,17 @@ public class Checker extends Actor
         
         return false;
     }
+    
+    public boolean isKing() {
+        return isKing;
+    }
+    
+    public void makeKing() {
+        isKing = true;
+        updateImage();
+    }
+    
+     
     }
     
     
