@@ -16,6 +16,12 @@ public class Tile extends Actor
     
     private int row;
     private int col;
+    private boolean isSelected;
+    protected GreenfootImage imageNormal;
+    protected GreenfootImage imageHighlight;
+    
+    private boolean isHighlighted;
+    
 
     public Tile(int row, int col) {
         this.row = row;
@@ -23,9 +29,11 @@ public class Tile extends Actor
     }
 
     public void act() {
-        if (Greenfoot.mouseClicked(this)) {
-            MyWorld world = (MyWorld) getWorld();
-            //world.tileClicked(this);
+        if (Greenfoot.mouseMoved(this)) {
+            setHighlighted(true);
+        }
+        if (Greenfoot.mouseMoved(null) && !Greenfoot.mouseMoved(this)) {
+            setHighlighted(false);
         }
     }
 
@@ -36,4 +44,18 @@ public class Tile extends Actor
     public int getCol() {
         return col;
     }
+    
+    public void setHighlighted(boolean highlighted) {
+        isHighlighted = highlighted;
+        updateImage();
+    }
+
+    protected void updateImage() {
+        if (isHighlighted) {
+            setImage(imageHighlight);
+        } else {
+            setImage(imageNormal);
+        }
+    }
+    
 }

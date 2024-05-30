@@ -1,5 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
+import java.util.ArrayList;
+import java.util.List;
 /**
  * Write a description of class Checker here.
  * 
@@ -10,13 +11,27 @@ public class Checker extends Actor
     protected boolean isPlayerOne;
     protected int row, col;
     private boolean isSelected;
+    private GreenfootImage imageDollar;
+    private GreenfootImage imageShell;
+    private GreenfootImage imageDollarHighlight;
+    private GreenfootImage imageShellHighlight;
 
     public Checker(boolean isPlayerOne, int row, int col) {
         this.isPlayerOne = isPlayerOne;
         this.row = row;
         this.col = col;
         this.isSelected = false;
+        imageDollar = new GreenfootImage("SandDollar.png");
+        imageDollar.scale(45,45);
+        imageShell = new GreenfootImage("SeaShell.png");
+        imageShell.scale(45 , 45);
+        imageDollarHighlight = new GreenfootImage("DollarHighlight.png");
+        imageDollarHighlight.scale(45,45);
+        imageShellHighlight = new GreenfootImage("ShellHighlight.png");
+        imageShellHighlight.scale(45 , 45);
         updateImage();
+        
+        
     }
 
     public void act() {
@@ -65,15 +80,18 @@ public class Checker extends Actor
     private void updateImage() {
         GreenfootImage image = new GreenfootImage(50, 50);
         if (isPlayerOne) {
-            setImage("SandDollar.png");
+            setImage(imageDollar);
         } else {
-            setImage("SeaShell.png");
+            setImage(imageShell);
         }
-        if (isSelected) {
-            image.setColor(Color.YELLOW);
+        if (isSelected && isPlayerOne) {
+            setImage(imageDollarHighlight);
         }
-        image.fillOval(5, 5, 40, 40);
-        setImage(image);
+        if (isSelected && !isPlayerOne) {
+            setImage(imageShellHighlight);
+        }
+        
+        
     }
     
     private void moveToTile(Tile tile) {
@@ -87,6 +105,7 @@ public class Checker extends Actor
             world.moveChecker(this, toRow, toCol);
             setSelected(false);
             world.switchPlayer();
+            
         }
     }
     
@@ -94,8 +113,27 @@ public class Checker extends Actor
         if (world.board[toRow][toCol] != MyWorld.EMPTY) {
             return false;
         }
+        //normal move
         int rowDiff = Math.abs(toRow - fromRow);
         int colDiff = Math.abs(toCol - fromCol);
-        return rowDiff == 1 && colDiff == 1;
+        if (rowDiff == 1 && colDiff == 1) {
+            return true;
+        }
+        //jump move
+        
+        if (rowDiff == 2 && colDiff == 2) {
+            int jumpRow = (fromRow + toRow) / 2;
+            int jumpCol = (fromCol + toCol) / 2;
+            
+            int opponentPiece = isPlayerOne ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+            if (world.board[jumpRow][jumpCol] == opponentPiece) {
+                return true;
+            }
+        }
+        
+        return false;
     }
-}
+    }
+    
+    
+

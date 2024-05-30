@@ -1,5 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
+import java.util.ArrayList;
+import java.util.List;
 /**
  * Write a description of class MyWorld here.
  * AANYA AND SOPHIA
@@ -23,7 +24,7 @@ public class MyWorld extends World
         // Create a new world with 8x8 cells with a cell size of 50x50 pixels.
         super(8, 8, 50); 
         createBoard();
-        showActivePlayer();
+        //showActivePlayer();
     }
     
     public void createBoard() {
@@ -39,36 +40,36 @@ public class MyWorld extends World
             }
         }
         
-        // Add player one pieces
+        // Add player 1
         for (int i = 0; i < 8; i += 2) {
             for (int j = 0; j < 3; j++) {
                 if (j % 2 == 0) {
-                    addObject(new Checker(true, j, i), i, j);
-                    board[j][i] = PLAYER_ONE_PIECE;
+                    addObject(new Checker(true, j, i+1), i+1, j);
+                    board[j][i+1] = PLAYER_ONE_PIECE;
                 } else {
-                    addObject(new Checker(true, j, i + 1), i + 1, j);
-                    board[j][i + 1] = PLAYER_ONE_PIECE;
+                    addObject(new Checker(true, j, i), i , j);
+                    board[j][i] = PLAYER_ONE_PIECE;
                 }
             }
         }
         
-        // Add player two pieces
+        // Ad Player 2 
         for (int i = 0; i < 8; i += 2) {
             for (int j = 5; j < 8; j++) {
                 if (j % 2 == 0) {
+                    addObject(new Checker(false, j, i+1), i+1, j);
+                    board[j][i+1] = PLAYER_TWO_PIECE;
+                } else {
                     addObject(new Checker(false, j, i), i, j);
                     board[j][i] = PLAYER_TWO_PIECE;
-                } else {
-                    addObject(new Checker(false, j, i + 1), i + 1, j);
-                    board[j][i + 1] = PLAYER_TWO_PIECE;
                 }
             }
         }
     }
     
-    public void showActivePlayer() {
-        showText("Player " + activePlayer + "'s turn", 2, 2);
-    }
+    //public void showActivePlayer() {
+      //  showText("Player " + activePlayer + "'s turn", 2, 2);
+    //}
     
     public void selectChecker(Checker checker) {
         if (selectedChecker != null) {
@@ -84,11 +85,20 @@ public class MyWorld extends World
         board[toRow][toCol] = board[fromRow][fromCol];
         board[fromRow][fromCol] = EMPTY;
         checker.setPosition(toRow, toCol);
+        
+        int jumpRow = (fromRow + toRow) / 2;
+        int jumpCol = (fromCol + toCol) / 2;
+        if (Math.abs(toRow - fromRow) == 2 && Math.abs(toCol - fromCol) == 2) {
+            board[jumpRow][jumpCol] = EMPTY; // Remove the opponent's checker
+        
+            removeObject(getObjectsAt(jumpCol, jumpRow, Checker.class).get(0)); // Remove the opponent's checker from the world
+        }
     }
 
     public void switchPlayer() {
         activePlayer = (activePlayer == 1) ? 2 : 1;
-        showActivePlayer();
+        //showActivePlayer();
     }
+    
 }
 

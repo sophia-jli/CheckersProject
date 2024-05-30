@@ -17,6 +17,12 @@ public class WhiteTile extends Tile
         GreenfootImage image = getImage();
         image.scale(50, 50);
         setImage(image);
+        imageNormal = new GreenfootImage("WhiteTile.png");
+        imageNormal.scale(50,50);
+        imageHighlight = new GreenfootImage("WhiteTileHighlight.png");
+        imageHighlight.scale(50,50);
+        
+        updateImage();
     }
     
     public void act()

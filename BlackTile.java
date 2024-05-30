@@ -18,6 +18,12 @@ public class BlackTile extends Tile
         GreenfootImage image = getImage();
         image.scale(50, 50);
         setImage(image);
+        imageNormal = new GreenfootImage("BlackTile.png");
+        imageNormal.scale(50,50);
+        imageHighlight = new GreenfootImage("BlackTileHighlight.png");
+        imageHighlight.scale(50,50);
+        
+        updateImage();
     }
     
     public void act()
