@@ -9,12 +9,19 @@ import java.util.List;
 public class Checker extends Actor
 {
     protected boolean isPlayerOne;
-    protected int row, col;
+    protected int row;
+    protected int col;
     private boolean isSelected;
     private GreenfootImage imageDollar;
     private GreenfootImage imageShell;
     private GreenfootImage imageDollarHighlight;
     private GreenfootImage imageShellHighlight;
+    //KING variables:
+    private boolean isKing;
+    private GreenfootImage imageDollarKing;
+    private GreenfootImage imageShellKing;
+    private GreenfootImage imageDollarKingHighlight;
+    private GreenfootImage imageShellKingHighlight;
 
     public Checker(boolean isPlayerOne, int row, int col) {
         this.isPlayerOne = isPlayerOne;
@@ -29,6 +36,10 @@ public class Checker extends Actor
         imageDollarHighlight.scale(45,45);
         imageShellHighlight = new GreenfootImage("ShellHighlight.png");
         imageShellHighlight.scale(45 , 45);
+        imageDollarKingHighlight = new GreenfootImage("DollarKingHighlight.png");
+        imageDollarKingHighlight.scale(45,45);
+        imageDollarKing = new GreenfootImage("DollarKing.png");
+        imageDollarKing.scale(45,45);
         updateImage();
         
         
@@ -37,6 +48,7 @@ public class Checker extends Actor
     public void act() {
         if (Greenfoot.mouseClicked(this)) {
             MyWorld world = (MyWorld) getWorld();
+            
             if ((isPlayerOne && world.activePlayer == 1) || (!isPlayerOne && world.activePlayer == 2)) {
                 world.selectChecker(this);
             }
@@ -44,12 +56,30 @@ public class Checker extends Actor
 
         if (isSelected && Greenfoot.mouseClicked(null)) {
             MouseInfo mouse = Greenfoot.getMouseInfo();
+            
             if (mouse != null) {
                 Actor clickedActor = mouse.getActor();
                 if (clickedActor instanceof Tile) {
                     Tile tile = (Tile) clickedActor;
                     moveToTile(tile);
+                    
                 }
+            }
+        }
+        checkKing();
+    }
+    
+    public void checkKing() {
+        
+        
+        if (isPlayerOne) {
+            if (getRow()>=7) {
+                makeKing();
+            }
+        }
+        else {
+            if (getRow()<=0) {
+                makeKing();
             }
         }
     }
@@ -57,11 +87,11 @@ public class Checker extends Actor
     public int getRow() {
         return row;
     }
-
     public int getCol() {
         return col;
     }
 
+    
     public void setPosition(int row, int col) {
         this.row = row;
         this.col = col;
@@ -79,31 +109,62 @@ public class Checker extends Actor
 
     private void updateImage() {
         GreenfootImage image = new GreenfootImage(50, 50);
-        if (isPlayerOne) {
+        if (!isKing) {
+            if (isPlayerOne) {
             setImage(imageDollar);
         } else {
             setImage(imageShell);
         }
+        
         if (isSelected && isPlayerOne) {
             setImage(imageDollarHighlight);
         }
         if (isSelected && !isPlayerOne) {
             setImage(imageShellHighlight);
         }
+        }
+        
+        else {
+       
+            if (isPlayerOne) {
+            setImage(imageDollarKing);
+        } else {
+            setImage(imageShellKing);
+        }
+        
+        if (isSelected && isPlayerOne) {
+            setImage(imageDollarKingHighlight);
+        }
+        if (isSelected && !isPlayerOne) {
+            setImage(imageShellKingHighlight);
+        }
+        }
+        
         
         
     }
     
     private void moveToTile(Tile tile) {
-        MyWorld world = (MyWorld) getWorld();
+        MyWorld world = (MyWorld)getWorld();
         int fromRow = getRow();
         int fromCol = getCol();
+        
         int toRow = tile.getRow();
         int toCol = tile.getCol();
 
         if (isValidMove(fromRow, fromCol, toRow, toCol, world)) {
             world.moveChecker(this, toRow, toCol);
             setSelected(false);
+            fromRow = getRow();
+              fromCol = getCol();
+        
+               toRow = tile.getRow();
+            toCol = tile.getCol();
+            //double jump
+            if (isValidMove(fromRow,fromCol, toRow, toCol, world)) {
+                world.moveChecker(this, toRow, toCol);
+            setSelected(false);
+            }
             world.switchPlayer();
             
         }
@@ -125,14 +186,30 @@ public class Checker extends Actor
             int jumpRow = (fromRow + toRow) / 2;
             int jumpCol = (fromCol + toCol) / 2;
             
-            int opponentPiece = isPlayerOne ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+            int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
             if (world.board[jumpRow][jumpCol] == opponentPiece) {
                 return true;
+                
             }
+            
         }
+        
+        //double jump 
+        
         
         return false;
     }
+    
+    public boolean isKing() {
+        return isKing;
+    }
+    
+    public void makeKing() {
+        isKing = true;
+        updateImage();
+    }
+    
+     
     }
     
     

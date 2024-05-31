@@ -18,13 +18,20 @@ public class MyWorld extends World
     public static final int EMPTY = 0;
     public static final int PLAYER_ONE_PIECE = 1;
     public static final int PLAYER_TWO_PIECE = 2;
+    public int shellCount = 12;
+    public int dollarCount = 12;
     
     public MyWorld()
     {    
         // Create a new world with 8x8 cells with a cell size of 50x50 pixels.
-        super(8, 8, 50); 
+        super(8, 8, 50);  //LATER CHANGE TO A SAND BACKGROUND W/ CUES FOR PLAYERS
+        //originally 10x12 (+3 & +8)
         createBoard();
         //showActivePlayer();
+    }
+    
+    public void act() {
+        endGame();
     }
     
     public void createBoard() {
@@ -36,7 +43,7 @@ public class MyWorld extends World
                 } else {
                     addObject(new BlackTile(i, j), j, i);
                 }
-                board[i][j] = EMPTY; // Initialize the board to be empty
+                board[i][j] = EMPTY; 
             }
         }
         
@@ -89,15 +96,34 @@ public class MyWorld extends World
         int jumpRow = (fromRow + toRow) / 2;
         int jumpCol = (fromCol + toCol) / 2;
         if (Math.abs(toRow - fromRow) == 2 && Math.abs(toCol - fromCol) == 2) {
-            board[jumpRow][jumpCol] = EMPTY; // Remove the opponent's checker
+            board[jumpRow][jumpCol] = EMPTY;
         
-            removeObject(getObjectsAt(jumpCol, jumpRow, Checker.class).get(0)); // Remove the opponent's checker from the world
+            Checker oppChecker = getObjectsAt(jumpCol, jumpRow, Checker.class).get(0);
+            //Remove opponent jumped
+            if (oppChecker.isPlayerOne()) {
+                dollarCount--;
+            }
+            if (!oppChecker.isPlayerOne()) {
+                shellCount--;
+            }
+            removeObject(oppChecker); 
         }
     }
 
     public void switchPlayer() {
         activePlayer = (activePlayer == 1) ? 2 : 1;
-        //showActivePlayer();
+        //showActivePlayer(); NEED TO FIX THIS
+    }
+    
+    public void endGame() {
+        if (shellCount==0) {
+            showText("Player 1 Wins!", 3,3);
+            Greenfoot.stop();
+        }
+        if (dollarCount==0) {
+            showText("Player 2 Wins!", 3,3);
+            Greenfoot.stop();
+        }
     }
     
 }
