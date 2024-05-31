@@ -36,6 +36,10 @@ public class Checker extends Actor
         imageDollarHighlight.scale(45,45);
         imageShellHighlight = new GreenfootImage("ShellHighlight.png");
         imageShellHighlight.scale(45 , 45);
+        imageDollarKingHighlight = new GreenfootImage("DollarKingHighlight.png");
+        imageDollarKingHighlight.scale(45,45);
+        imageDollarKing = new GreenfootImage("DollarKing.png");
+        imageDollarKing.scale(45,45);
         updateImage();
         
         
@@ -60,6 +64,22 @@ public class Checker extends Actor
                     moveToTile(tile);
                     
                 }
+            }
+        }
+        checkKing();
+    }
+    
+    public void checkKing() {
+        
+        
+        if (isPlayerOne) {
+            if (getRow()>=7) {
+                makeKing();
+            }
+        }
+        else {
+            if (getRow()<=0) {
+                makeKing();
             }
         }
     }
@@ -135,6 +155,16 @@ public class Checker extends Actor
         if (isValidMove(fromRow, fromCol, toRow, toCol, world)) {
             world.moveChecker(this, toRow, toCol);
             setSelected(false);
+            fromRow = getRow();
+              fromCol = getCol();
+        
+               toRow = tile.getRow();
+            toCol = tile.getCol();
+            //double jump
+            if (isValidMove(fromRow,fromCol, toRow, toCol, world)) {
+                world.moveChecker(this, toRow, toCol);
+            setSelected(false);
+            }
             world.switchPlayer();
             
         }
@@ -156,11 +186,16 @@ public class Checker extends Actor
             int jumpRow = (fromRow + toRow) / 2;
             int jumpCol = (fromCol + toCol) / 2;
             
-            int opponentPiece = isPlayerOne ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+            int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
             if (world.board[jumpRow][jumpCol] == opponentPiece) {
                 return true;
+                
             }
+            
         }
+        
+        //double jump 
+        
         
         return false;
     }
