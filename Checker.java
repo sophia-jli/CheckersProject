@@ -74,8 +74,6 @@ public class Checker extends Actor
     }
     
     public void checkKing() {
-        
-        
         if (isPlayerOne) {
             if (getRow()>=7) {
                 makeKing();
@@ -144,8 +142,6 @@ public class Checker extends Actor
         }
         }
         
-        
-        
     }
     
     private void moveToTile(Tile tile) {
@@ -156,23 +152,21 @@ public class Checker extends Actor
         int toRow = tile.getRow();
         int toCol = tile.getCol();
 
-        if (isValidMove(fromRow, fromCol, toRow, toCol, world)) {
+                if (isValidMove(fromRow, fromCol, toRow, toCol, world)) {
             world.moveChecker(this, toRow, toCol);
             setSelected(false);
-            fromRow = getRow();
-              fromCol = getCol();
-        
-               toRow = tile.getRow();
-            toCol = tile.getCol();
-            //double jump
-            if (isValidMove(fromRow,fromCol, toRow, toCol, world)) {
-                world.moveChecker(this, toRow, toCol);
-            setSelected(false);
+            if (isJumpMove(fromRow, fromCol, toRow, toCol)) {
+                if (checkForDoubleJump(toRow, toCol)) {
+                    setSelected(true);
+                } else {
+                    world.switchPlayer();
+                }
+            } else {
+                world.switchPlayer();
             }
-            world.switchPlayer();
-            
         }
     }
+    
     
     private boolean isValidMove(int fromRow, int fromCol, int toRow, int toCol, MyWorld world) {
         if (world.board[toRow][toCol] != MyWorld.EMPTY) {
@@ -180,79 +174,76 @@ public class Checker extends Actor
         }
         //normal move
         if (isKing()) {
-            
-        
-        int rowDiff = Math.abs(toRow - fromRow);
-        int colDiff = Math.abs(toCol - fromCol);
-        if (rowDiff == 1 && colDiff == 1) {
-            return true;
-        }
-        //jump move
-        
-        if (rowDiff == 2 && colDiff == 2) {
-            int jumpRow = (fromRow + toRow) / 2;
-            int jumpCol = (fromCol + toCol) / 2;
-            
-            int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
-            if (world.board[jumpRow][jumpCol] == opponentPiece) {
-                return true;
-                
-            }
-            
-        }
-        
-        //double jump 
-        
-        
-        return false;
-    }
-    
-    else {
-        if (isPlayerOne()) {
-            int rowDiff = toRow - fromRow;
+            int rowDiff = Math.abs(toRow - fromRow);
             int colDiff = Math.abs(toCol - fromCol);
-            
             if (rowDiff == 1 && colDiff == 1) {
-            return true;
-        }
-        //jump move
-        
-        if (rowDiff == 2 && colDiff == 2) {
-            int jumpRow = (fromRow + toRow) / 2;
-            int jumpCol = (fromCol + toCol) / 2;
-            
-            int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
-            if (world.board[jumpRow][jumpCol] == opponentPiece) {
                 return true;
-                
             }
-            
-        }
-        }
+            //jump move
         
+            if (rowDiff == 2 && colDiff == 2) {
+                int jumpRow = (fromRow + toRow) / 2;
+                int jumpCol = (fromCol + toCol) / 2;
+            
+                int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+                if (world.board[jumpRow][jumpCol] == opponentPiece) {
+                    return true;
+                
+                }
+            
+            }
+        
+            //double jump 
+        
+            return false;
+        }
+    
         else {
-            int rowDiff = toRow - fromRow;
-            int colDiff = Math.abs(toCol - fromCol);
+            if (isPlayerOne()) {
+                int rowDiff = toRow - fromRow;
+                int colDiff = Math.abs(toCol - fromCol);
+            
+                if (rowDiff == 1 && colDiff == 1) {
+                return true;
+                }
+                //jump move
+        
+                if (rowDiff == 2 && colDiff == 2) {
+                    int jumpRow = (fromRow + toRow) / 2;
+                    int jumpCol = (fromCol + toCol) / 2;
+            
+                    int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+                    if (world.board[jumpRow][jumpCol] == opponentPiece) {
+                        return true;
+                
+                    }
+            
+                }
+            }
+        
+            else {
+                int rowDiff = toRow - fromRow;
+                int colDiff = Math.abs(toCol - fromCol);
             
                 if (rowDiff == -1 && colDiff == 1) {
-            return true;
-        }
-        //jump move
-        
-        if (rowDiff == -2 && colDiff == 2) {
-            int jumpRow = (fromRow + toRow) / 2;
-            int jumpCol = (fromCol + toCol) / 2;
-            
-            int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
-            if (world.board[jumpRow][jumpCol] == opponentPiece) {
                 return true;
-                
-            }
+                }
+                //jump move
+        
+                if (rowDiff == -2 && colDiff == 2) {
+                    int jumpRow = (fromRow + toRow) / 2;
+                    int jumpCol = (fromCol + toCol) / 2;
             
+                    int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+                    if (world.board[jumpRow][jumpCol] == opponentPiece) {
+                        return true;
+                
+                    }
+            
+                }
+            }
+            return false;
         }
-        }
-        return false;
-    }
     }
     
     public boolean isKing() {
@@ -264,8 +255,26 @@ public class Checker extends Actor
         updateImage();
     }
     
-     
+    private boolean isJumpMove(int fromRow, int fromCol, int toRow, int toCol) {
+        return Math.abs(toRow - fromRow) == 2 && Math.abs(toCol - fromCol) == 2;
     }
+
+    private boolean checkForDoubleJump(int currentRow, int currentCol) {
+        MyWorld world = (MyWorld) getWorld();
+        int[][] directions = { { 2, 2 }, { 2, -2 }, { -2, 2 }, { -2, -2 } };
+        for (int[] dir : directions) {
+            int newRow = currentRow + dir[0];
+            int newCol = currentCol + dir[1];
+            if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                if (isValidMove(currentRow, currentCol, newRow, newCol, world)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+     
+}
     
-    
+
 
