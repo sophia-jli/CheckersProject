@@ -40,6 +40,10 @@ public class Checker extends Actor
         imageDollarKingHighlight.scale(45,45);
         imageDollarKing = new GreenfootImage("DollarKing.png");
         imageDollarKing.scale(45,45);
+        imageShellKingHighlight = new GreenfootImage("ShellKingHighlight.png");
+        imageShellKingHighlight.scale(45,45);
+        imageShellKing = new GreenfootImage("ShellKing.png");
+        imageShellKing.scale(45,45);
         updateImage();
         
         
