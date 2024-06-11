@@ -179,6 +179,9 @@ public class Checker extends Actor
             return false;
         }
         //normal move
+        if (isKing()) {
+            
+        
         int rowDiff = Math.abs(toRow - fromRow);
         int colDiff = Math.abs(toCol - fromCol);
         if (rowDiff == 1 && colDiff == 1) {
@@ -202,6 +205,54 @@ public class Checker extends Actor
         
         
         return false;
+    }
+    
+    else {
+        if (isPlayerOne()) {
+            int rowDiff = toRow - fromRow;
+            int colDiff = Math.abs(toCol - fromCol);
+            
+            if (rowDiff == 1 && colDiff == 1) {
+            return true;
+        }
+        //jump move
+        
+        if (rowDiff == 2 && colDiff == 2) {
+            int jumpRow = (fromRow + toRow) / 2;
+            int jumpCol = (fromCol + toCol) / 2;
+            
+            int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+            if (world.board[jumpRow][jumpCol] == opponentPiece) {
+                return true;
+                
+            }
+            
+        }
+        }
+        
+        else {
+            int rowDiff = toRow - fromRow;
+            int colDiff = Math.abs(toCol - fromCol);
+            
+                if (rowDiff == -1 && colDiff == 1) {
+            return true;
+        }
+        //jump move
+        
+        if (rowDiff == -2 && colDiff == 2) {
+            int jumpRow = (fromRow + toRow) / 2;
+            int jumpCol = (fromCol + toCol) / 2;
+            
+            int opponentPiece = isPlayerOne() ? MyWorld.PLAYER_TWO_PIECE : MyWorld.PLAYER_ONE_PIECE;
+            if (world.board[jumpRow][jumpCol] == opponentPiece) {
+                return true;
+                
+            }
+            
+        }
+        }
+        return false;
+    }
     }
     
     public boolean isKing() {

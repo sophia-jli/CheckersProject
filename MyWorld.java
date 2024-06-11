@@ -11,6 +11,7 @@ public class MyWorld extends World
     /**
      * Constructor for objects of class MyWorld.
      */
+    
     public int activePlayer = 1;
     private Checker selectedChecker;
     public int[][] board;
