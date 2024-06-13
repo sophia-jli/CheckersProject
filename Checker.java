@@ -152,7 +152,7 @@ public class Checker extends Actor
         int toRow = tile.getRow();
         int toCol = tile.getCol();
 
-                if (isValidMove(fromRow, fromCol, toRow, toCol, world)) {
+        if (isValidMove(fromRow, fromCol, toRow, toCol, world)) {
             world.moveChecker(this, toRow, toCol);
             setSelected(false);
             if (isJumpMove(fromRow, fromCol, toRow, toCol)) {
@@ -164,11 +164,12 @@ public class Checker extends Actor
             } else {
                 world.switchPlayer();
             }
+       
         }
     }
     
     
-    private boolean isValidMove(int fromRow, int fromCol, int toRow, int toCol, MyWorld world) {
+    public boolean isValidMove(int fromRow, int fromCol, int toRow, int toCol, MyWorld world) {
         if (world.board[toRow][toCol] != MyWorld.EMPTY) {
             return false;
         }

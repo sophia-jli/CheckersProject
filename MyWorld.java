@@ -114,18 +114,58 @@ public class MyWorld extends World
     public void switchPlayer() {
         activePlayer = (activePlayer == 1) ? 2 : 1;
         //showActivePlayer(); NEED TO FIX THIS
+        if (!hasValidMoves(activePlayer)) {
+            endGameDueToNoMoves();
+        }
+        endGameIfNoPiecesLeft();
     }
     
+   
     public void endGame() {
-        if (shellCount==0) {
-            showText("Player 1 Wins!", 3,3);
+        if (shellCount == 0) {
+            showText("Player 1 Wins!", 3, 3);
             Greenfoot.stop();
         }
-        if (dollarCount==0) {
-            showText("Player 2 Wins!", 3,3);
+        if (dollarCount == 0) {
+            showText("Player 2 Wins!", 3, 3);
             Greenfoot.stop();
         }
+        
+    }
+
+    public boolean hasValidMoves(int player) {
+        for (Checker checker : getObjects(Checker.class)) {
+            if ((player == 1 && checker.isPlayerOne()) || (player == 2 && !checker.isPlayerOne())) {
+                for (int row = 0; row < 8; row++) {
+                    for (int col = 0; col < 8; col++) {
+                        if (checker.isValidMove(checker.getRow(), checker.getCol(), row, col, this)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public void endGameDueToNoMoves() {
+        if (activePlayer == 1) {
+            showText("Player 2 Wins!", 3, 3);
+        } else {
+            showText("Player 1 Wins!", 3, 3);
+        }
+        Greenfoot.stop();
     }
     
+    public void endGameIfNoPiecesLeft() {
+    if (shellCount == 0) {
+        showText("Player 1 Wins!", 3, 3);
+        Greenfoot.stop();
+    }
+    if (dollarCount == 0) {
+        showText("Player 2 Wins!", 3, 3);
+        Greenfoot.stop();
+    }
+    }
 }
 
